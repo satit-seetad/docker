@@ -22,6 +22,9 @@ How to use docker
 `docker run -v /app/node_modules -v ${pwd}:/app <container_id>`	=> run container with volume mapping<br>
 `docker run -it <container_id> <command>`   => run container with command line
 
+## Execute command
+`docker exec -it <container_id> <command>`
+
 ## Stop container
 `docker stop <container_id>`<br>
 `docker kill <container_id>`
