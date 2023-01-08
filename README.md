@@ -18,7 +18,9 @@
 * execute container
 
 ```docker exec [container] [command]```
+
 ```docker run -it [image] [command]```
+
 ```docker run -d [image]```  // run in background
 
 * port mapping
@@ -48,12 +50,15 @@
 * network
 
 ```docker run [image]``` // use bridge network
+
 ```docker run [image] --network=none```   // no network
+
 ```docker run [image] --network=host```  // use host network
 
 * resource limit
 
 ```docker run --cpus=.5 [image]```
+
 ```docker run --memory=100m [image]```
 
 # Manage/check container
@@ -108,13 +113,17 @@
 * build image
 
 ```docker build .```
+
 ```docker build . -t [tag]```  
+
 ```docker build -f [docker_file]```  
 
 * push image
 
 ```docker login```
+
 ```docker login -u "[username]" --password-stdin "[password]"```
+
 ```docker push [account]/[name]```
 
 # System
@@ -142,14 +151,19 @@
 # Volume
 
 ```docker volume create [volume_name]``` // created under /var/lib/docker/volumes folder
+
 ```docker run -v [volume_name]:[volume_container] [image]```
+
 ```docker run -v [path_host]:[path_container] [image]```
 
 # Private registry
 
 ```docker run -d -p 5000:5000 --name registry registry:2```
+
 ```docker image -t my_image localhost:5000/my_image```
+
 ```docker push localhost:5000/my_image```
+
 ```docker pull localhost:5000/my_image```
 
 # Other
@@ -164,13 +178,16 @@
 * cmd vs entrypoint
 
 ```CMD sleep 5``` => docker run xxx sleep 10 => will replace
+
 ```ENTRYPOINT ["sleep"]``` => docker run xxx 10 => will append to the sleep as parameter
+
 ```ENTRYPOINT ["sleep"]  CMD ["5"]``` => docker run xxx => will run default and also put the parameter
 
 # Docker Compose
 * start
 
 ```docker-compose up```
+
 ```docker-compose up --build```
 
 * stop
