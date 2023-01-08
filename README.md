@@ -1,6 +1,6 @@
 # Run container
 * create container
-```docker create [image_id]```
+`docker create [image_id]`
 
 * run container
 ```docker start [container]```
