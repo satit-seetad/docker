@@ -1,72 +1,164 @@
-# docker
-How to use docker
+# Run container
+* create container
+```docker create [image_id]```
 
-## List container
-`docker ps`<br>
-`docker ps -a`      => show all containers
+* run container
+```docker start [container]```
 
-## Build image
-`docker build .` => create docker image<br>
-`docker build -f <docker_file> .`	=> create docker image with specific dockerfile<br>
-`docker build -t <docker_id>/<name> .`  => create docker image with tag
+* download image and run container
+```docker run [image]```
 
-## Create container
-`docker create <image_id>` => create container
+* run with command
+```docker run [image] [command]```
 
-## Start container
-`docker start <container_id>` => start container
+* execute container
+```docker exec [container] [command]```
+```docker run -it [image] [command]```
+```docker run -d [image]```  // run in background
 
-## Run container (create + start)
-`docker run <image_id>` => run container<br>
-`docker run -p 3000:3000 <container_id>`    => run container with port mapping<br>
-`docker run -v /app/node_modules -v ${pwd}:/app <container_id>`	=> run container with volume mapping<br>
-`docker run -it <container_id> <command>`   => run container with command line
+* port mapping
+```docker run -p [ext.port][int.port] [image]```
 
-## Execute command
-`docker exec -it <container_id> <command>`
+* volume mapping
+```docker run -v [ex.dir][int.dir] [image]```
 
-## Stop container
-`docker stop <container_id>`<br>
-`docker kill <container_id>`
+* name setting
+```docker run --name=[name] [image]```
 
-## Clear image cache
-`docker system prune -a`
+* environment variable
+```docker run -e [env]=[value] [image]```
 
-## Push to docker hub
-`docker login`<br>
-`docker login -u "<username>" --password-stdin "<password>"`<br>
-`docker push <image_id>`	=> push image to docker hub
+* override entrypoint
+```docker run --entrypoint [cmd] [image]```
 
-## Docker compound
-`docker-compose up`<br>
-`docker-compose up --build`<br>
-`docker-compose down`
+* link with other container
+```docker run --link [name to call]:[name container] [image]```
 
-## Dockerfile example
-`FROM node:alpine`<br><br>
+* network
+```docker run [image]``` // use bridge network
+```docker run [image] --network=none```   // no network
+```docker run [image] --network=host```  // use host network
 
-`WORKDIR '/app'`<br>
-`COPY package.json .`<br><br>
+* resource limit
+```docker run --cpus=.5 [image]```
+```docker run --memory=100m [image]```
 
-`RUN npm install`<br><br>
+# Manage/check container
 
-`COPY . .`<br>
+* list running containers
+```docker ps```
 
-`CMD ["npm", "run", "start"]`
+* list all containers
+```docker ps -a```
 
-## Docker compose example
-`version: '3'`<br>
-`services:`<br>
-&nbsp;&nbsp;&nbsp;`web:`<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`build:`<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;`context: .`<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`dockerfile: Dockerfile.dev`<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`ports:`<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`- "3000:3000"`<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`volumes:`<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`- /app/node_modules`<br>
-&nbsp;&nbsp;&nbsp;`tests:`<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; `command: ["npm", "run", "test"`
+* stop container
+```docker stop [container]```
+
+* remove container
+```docker rm [container]...```
+
+* kill container
+```docker kill [container]```
+
+* attach container
+```docker attach [container]```
+
+* inspect container
+```docker inspect [container]```
+
+* check log from container
+```docker logs [container]```
 
 
+# Image
 
+* list image
+```docker images```
+
+* delete imgage
+```docker rmi [image]```
+
+* pull image
+```docker pull [image]```
+
+* build image
+```docker build .```
+```docker build . -t [tag]```  
+```docker build -f [docker_file]```  
+
+* push image
+```docker login```
+```docker login -u "[username]" --password-stdin "[password]"```
+```docker push [account]/[name]```
+
+# System
+* check size usage of docker
+```docker system df```
+
+* show all images with size
+```docker system df -v```
+
+* delete all files
+```docker system prune -a```
+
+# Network
+* create network
+```docker network create --driver bridge subnet [subnet][network_name]```
+	
+* list all networks
+```docker network ls``` 
+
+# Volume
+
+```docker volume create [volume_name]``` // created under /var/lib/docker/volumes folder
+```docker run -v [volume_name]:[volume_container] [image]```
+```docker run -v [path_host]:[path_container] [image]```
+
+# Private registry
+```docker run -d -p 5000:5000 --name registry registry:2```
+```docker image -t my_image localhost:5000/my_image```
+```docker push localhost:5000/my_image```
+```docker pull localhost:5000/my_image```
+
+# Other
+* check version
+```docker version```
+* docker engine
+```docker -H=[host:port] run [image]```
+
+
+* cmd vs entrypoint
+ ```CMD sleep 5``` => docker run xxx sleep 10 => will replace
+```ENTRYPOINT ["sleep"]``` => docker run xxx 10 => will append to the sleep as parameter
+```ENTRYPOINT ["sleep"]  CMD ["5"]``` => docker run xxx => will run default and also put the parameter
+
+# Docker Compose
+* start
+```docker-compose up```
+```docker-compose up --build```
+
+* stop
+```docker-compose down```
+
+
+* structure
+```
+version: 2
+services:
+	[name]:
+		image:
+		ports:
+			-[port]:[port]
+		links	=> use for v1 only
+			-[name container]
+		depends_on:
+			-[name container]
+		build: [path of dockerfile]
+		networks:
+			-[network]
+		environment:
+			[name]: [value]
+networks:
+	[network1]:
+	[network2]
+```
